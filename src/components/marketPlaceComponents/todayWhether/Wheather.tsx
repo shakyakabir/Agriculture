@@ -41,7 +41,7 @@ const Wheather: React.FC<props> = ({ selectedLocationData }) => {
                             <span className="text-xs font-semibold text-gray-500">temperature</span>
                         </div>
                         <div className="data-container text-center flex flex-col justify-center">
-                            <h1 className="text-2xl font-bold text-black">{data.partlyCloudy}</h1>
+                            <h1 className="text-lg font-bold text-black">{data.partlyCloudy}</h1>
                             <span className="text-xs font-semibold text-gray-500">temperature</span>
                         </div>
                     </div>

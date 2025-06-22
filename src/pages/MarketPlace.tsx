@@ -4,6 +4,9 @@ import type { LocationTypes } from "../components/marketPlaceComponents/Types";
 import Wheather from "../components/marketPlaceComponents/todayWhether/Wheather";
 import { useWheatherContext } from "../components/context/WhetherContext";
 import FarmingTips from "../components/marketPlaceComponents/todayWhether/FarmingTips";
+import FutureForcast from "../components/marketPlaceComponents/futureForecast/FutureForcast";
+import { Advisory } from "../components/marketPlaceComponents/Advisory";
+import LiveMarketPlace from "../components/marketPlaceComponents/liveMarketPlace/LiveMarketPlace";
 
 const MarketPlace = () => {
     const { selectedLocation } = useWheatherContext();
@@ -22,21 +25,30 @@ const MarketPlace = () => {
     }, [selectedLocation]);
 
     return (
-        <div className="market-container flex flex-col gap-y-6">
-            <div className="location-container">
-                <Location locations={locations} />
-            </div>
-            <div className="whether-container max-h-[200px] grid grid-cols-5 grid-rows-1">
-                <div className="mr-5 col-start-1 col-span-3">
-                    <Wheather selectedLocationData={selectedLocationData} />
+        <>
+            <div className="market-container flex flex-col gap-y-6">
+                <div className="location-container">
+                    <Location locations={locations} />
                 </div>
-                <div className="col-start-4 col-span-5">
-                    <FarmingTips />
+                <div className="whether-container max-h-[200px] grid grid-cols-5 grid-rows-1">
+                    <div className="mr-5 col-start-1 col-span-3">
+                        <Wheather selectedLocationData={selectedLocationData} />
+                    </div>
+                    <div className="col-start-4 col-span-5">
+                        <FarmingTips />
+                    </div>
+                </div>
+                <div className="future-forcast-container">
+                    <FutureForcast />
+                </div>
+                <div>
+                    <Advisory />
                 </div>
             </div>
-            <div></div>
-            <div></div>
-        </div>
+            <div>
+                <LiveMarketPlace />
+            </div>
+        </>
     )
 }
 
