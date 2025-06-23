@@ -1,5 +1,6 @@
 import type { FilterByCatagoryType } from "./CatagoryType";
 import Filter from "./Filter";
+import axios from "axios";
 
 const LiveMarketPlace = () => {
     const filterByCatagory = [
@@ -16,7 +17,11 @@ const LiveMarketPlace = () => {
     ]
 
     const handleCatagoryFilter = () => {
-
+        axios.get("http://localhost:8080/api/greeting",
+            { withCredentials: true }
+        )
+            .then(response => console.log(response))
+            .catch(error => console.error(error));
     }
 
     const handleMarketFilter = () => {
