@@ -1,4 +1,37 @@
+import { useRef, useState } from "react";
+import { analyzeCropImage } from "./Api";
+
 const Detection = () => {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
+  };
+  const [files, setFile] = useState<File | undefined>(undefined);
+  const [imageURL, setImageURL] = useState<string | null>(null);
+  const [diagnosis, setDiagnosis] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event?.target.files?.[0];
+    if (file) {
+      setFile(file);
+      setImageURL(URL.createObjectURL(file)); // Generate preview URL
+      convertToBased64(file);
+    }
+  };
+  const convertToBased64 = (file: File) => {
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64 = (reader.result as string).split(",")[1];
+      setLoading(true);
+      const result = await analyzeCropImage(base64);
+      setDiagnosis(result);
+      setLoading(false);
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div className="text-center mb-10">
       <div>
@@ -14,7 +47,18 @@ const Detection = () => {
       </div>
       <div className="border-2 border-dashed border-gray-200 bg-white rounded-2xl p-5 mt-15">
         <div className="bg-gray-300 rounded-full inline-block p-4 ">
-          <img src="/camera.svg" className="h-10 w-10" alt="" />
+          {imageURL ? (
+            <div className="mt-5">
+              <p className="text-lg font-medium">Preview:</p>
+              <img
+                src={imageURL}
+                alt="Uploaded preview"
+                className=" h-10 w-10"
+              />
+            </div>
+          ) : (
+            <img src="/camera.svg" className="h-10 w-10" alt="" />
+          )}
         </div>
         <div className="mt-5">
           <h3 className="font-bold text-xl">Upload Crop Image</h3>
@@ -22,12 +66,32 @@ const Detection = () => {
             Take a clear photo of affected leaves or crops for accurate
             diagnosis
           </p>
-          <button className="border border-gray-200 rounded-xl p-2 mt-5 hover:bg-gray-300">
+          <button
+            className="border border-gray-200 rounded-xl p-2 mt-5 hover:bg-gray-300"
+            onClick={handleButtonClick}
+          >
             Choose Image
           </button>
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            style={{ display: "none" }}
+          />
         </div>
       </div>
 
+      {loading ? (
+        <p className="mt-5 text-gray-500">Analyzing image...</p>
+      ) : (
+        diagnosis && (
+          <div className="bg-green-50 border border-green-300 mt-5 mx-auto max-w-xl p-4 rounded-xl text-left">
+            <h4 className="font-semibold text-green-700">Diagnosis Result:</h4>
+            <p className="text-gray-700 mt-2">{diagnosis}</p>
+          </div>
+        )
+      )}
       <div className="bg-gray-200 text-start p-5 mt-10 rounded-xl border  border-gray-300">
         <ul className="list-disc p-5">
           <h3 className="font-bold text-md">Tips for Better Results</h3>
